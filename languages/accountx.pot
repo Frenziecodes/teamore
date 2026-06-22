@@ -1,0 +1,195 @@
+# Copyright (C) 2026 AccountX
+# This file is distributed under the GPLv3.
+msgid ""
+msgstr ""
+"Project-Id-Version: AccountX - Teams & Subaccounts for WooCommerce 0.1.0\n"
+"Report-Msgid-Bugs-To: https://example.com/accountx\n"
+"POT-Creation-Date: 2026-06-22 00:00+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: AccountX\n"
+"X-Domain: accountx\n"
+
+msgid "AccountX requires WooCommerce to be installed and active."
+msgstr ""
+
+msgid "Subaccount"
+msgstr ""
+
+msgid "Team Member"
+msgstr ""
+
+msgid "Subaccount limit reached."
+msgstr ""
+
+msgid "Please enter a valid email address."
+msgstr ""
+
+msgid "A user with this email address already exists."
+msgstr ""
+
+msgid "Password must be at least 8 characters long."
+msgstr ""
+
+msgid "You cannot edit this subaccount."
+msgstr ""
+
+msgid "You cannot delete this subaccount."
+msgstr ""
+
+msgid "Placed by"
+msgstr ""
+
+msgid "Unknown"
+msgstr ""
+
+msgid "%s (Subaccount)"
+msgstr ""
+
+msgid "%s (Parent)"
+msgstr ""
+
+msgid "Switch request could not be verified."
+msgstr ""
+
+msgid "You cannot switch to this subaccount."
+msgstr ""
+
+msgid "Switch back request could not be verified."
+msgstr ""
+
+msgid "No parent session was found."
+msgstr ""
+
+msgid "You are viewing this store as a subaccount."
+msgstr ""
+
+msgid "Switch Back to Parent"
+msgstr ""
+
+msgid "Subaccounts cannot manage other accounts."
+msgstr ""
+
+msgid "Security check failed. Please try again."
+msgstr ""
+
+msgid "Subaccount saved successfully."
+msgstr ""
+
+msgid "Subaccounts are currently disabled."
+msgstr ""
+
+msgid "Subaccounts"
+msgstr ""
+
+msgid "Team Accounts"
+msgstr ""
+
+msgid "%1$s usage: %2$d of %3$d."
+msgstr ""
+
+msgid "You have reached the subaccount limit."
+msgstr ""
+
+msgid "Create %s"
+msgstr ""
+
+msgid "Create Subaccount"
+msgstr ""
+
+msgid "Existing %s Accounts"
+msgstr ""
+
+msgid "No subaccounts have been created yet."
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Email"
+msgstr ""
+
+msgid "Orders"
+msgstr ""
+
+msgid "Actions"
+msgstr ""
+
+msgid "No orders"
+msgstr ""
+
+msgid "Switch to Subaccount"
+msgstr ""
+
+msgid "First name"
+msgstr ""
+
+msgid "Last name"
+msgstr ""
+
+msgid "Email address"
+msgstr ""
+
+msgid "Password"
+msgstr ""
+
+msgid "Edit"
+msgstr ""
+
+msgid "Save Subaccount"
+msgstr ""
+
+msgid "Delete this subaccount?"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid "AccountX"
+msgstr ""
+
+msgid "AccountX Settings"
+msgstr ""
+
+msgid "AccountX - Teams & Subaccounts"
+msgstr ""
+
+msgid "Turn WooCommerce customer accounts into team accounts."
+msgstr ""
+
+msgid "Features"
+msgstr ""
+
+msgid "Enable subaccount features"
+msgstr ""
+
+msgid "Mode"
+msgstr ""
+
+msgid "Multi-User Mode"
+msgstr ""
+
+msgid "Sub-User Mode"
+msgstr ""
+
+msgid "Show the AccountX menu in WooCommerce My Account and allow parent customers to manage subaccounts."
+msgstr ""
+
+msgid "Choose how subaccounts are presented to customers: team members for company accounts, or controlled subaccounts under one parent customer."
+msgstr ""
+
+msgid "Subaccount limit"
+msgstr ""
+
+msgid "Set the maximum number of subaccounts each parent customer can create."
+msgstr ""
+
+msgid "User switching"
+msgstr ""
+
+msgid "Allow parents to switch into subaccount sessions"
+msgstr ""
+
+msgid "Adds a My Account button that lets a parent customer temporarily view the store as one of their subaccounts."
+msgstr ""
