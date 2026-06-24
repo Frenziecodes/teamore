@@ -56,11 +56,11 @@ No. Only parent accounts can manage their own subaccounts.
 
 == Upgrade Notice ==
 
-= 0.1.0 =
+= 1.0.0 =
 
 Initial release.
 
 == Changelog ==
 
-= 0.1.0 =
+= 1.0.0 =
 * Initial MVP release.
