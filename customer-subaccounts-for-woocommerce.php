@@ -1,11 +1,11 @@
 <?php
 /**
  * Plugin Name: Customer Subaccounts for WooCommerce
- * Plugin URI:  https://github.com/38zo/customer-subaccounts-for-woocommerce
+ * Plugin URI:  https://github.com/Frenziecodes/customer-subaccounts-for-woocommerce
  * Description: Turn WooCommerce customer accounts into team accounts with lightweight subaccount management.
  * Version:     1.0.0
- * Author:      38zo
- * Author URI:  https://github.com/38zo
+ * Author:      lewisushindi
+ * Author URI:  https://github.com/frenziecodes
  * Text Domain: customer-subaccounts-for-woocommerce
  * Domain Path: /languages
  * License: GPL-3.0-or-later
