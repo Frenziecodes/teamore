@@ -100,10 +100,6 @@ Yes. When enabled, parent customers can switch into a subaccount session from My
 
 The plugin declares compatibility with WooCommerce custom order tables.
 
-== Privacy ==
-
-Customer Subaccounts for WooCommerce stores the parent/subaccount relationship as user meta and may store order meta showing which connected user placed an order. The plugin does not send this data to an external service.
-
 == Upgrade Notice ==
 
 = 1.0.0 =
