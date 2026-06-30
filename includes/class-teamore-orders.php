@@ -26,16 +26,26 @@ class Teamore_Orders {
 	private $settings;
 
 	/**
+	 * Switching service.
+	 *
+	 * @var Teamore_Switching
+	 */
+	private $switching;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Teamore_Settings    $settings    Settings service.
 	 * @param Teamore_Subaccounts $subaccounts Subaccounts service.
+	 * @param Teamore_Switching   $switching   Switching service.
 	 */
-	public function __construct( Teamore_Settings $settings, Teamore_Subaccounts $subaccounts ) {
+	public function __construct( Teamore_Settings $settings, Teamore_Subaccounts $subaccounts, Teamore_Switching $switching ) {
 		$this->settings    = $settings;
 		$this->subaccounts = $subaccounts;
+		$this->switching   = $switching;
 
 		add_action( 'woocommerce_checkout_create_order', array( $this, 'store_placed_by' ), 10, 2 );
+		add_filter( 'woocommerce_checkout_customer_id', array( $this, 'filter_checkout_customer_id' ) );
 		add_filter( 'woocommerce_my_account_my_orders_query', array( $this, 'include_subaccount_orders' ) );
 		add_action( 'woocommerce_my_account_my_orders_column_order-placed-by', array( $this, 'render_placed_by_column' ) );
 		add_filter( 'woocommerce_account_orders_columns', array( $this, 'add_placed_by_column' ) );
@@ -57,12 +67,29 @@ class Teamore_Orders {
 	public function store_placed_by( $order, $data ) {
 		unset( $data );
 
-		$user_id = get_current_user_id();
+		$user_id              = $this->switching->get_context_user_id();
+		$active_subaccount_id = $this->switching->get_active_subaccount_id();
 
 		if ( $user_id > 0 ) {
 			$order->update_meta_data( '_teamore_placed_by_user_id', $user_id );
-			$order->update_meta_data( '_teamore_parent_user_id', $this->subaccounts->get_parent_id( $user_id ) );
+			$order->update_meta_data( '_teamore_parent_user_id', $active_subaccount_id > 0 ? get_current_user_id() : $this->subaccounts->get_parent_id( $user_id ) );
 		}
+	}
+
+	/**
+	 * Assign checkout orders to the active subaccount context.
+	 *
+	 * @param int $customer_id Checkout customer ID.
+	 * @return int
+	 */
+	public function filter_checkout_customer_id( $customer_id ) {
+		$context_user_id = $this->switching->get_context_user_id();
+
+		if ( $context_user_id > 0 && $context_user_id !== get_current_user_id() ) {
+			return $context_user_id;
+		}
+
+		return $customer_id;
 	}
 
 	/**
@@ -75,6 +102,13 @@ class Teamore_Orders {
 		$user_id = get_current_user_id();
 
 		if ( $user_id < 1 || $this->subaccounts->is_subaccount( $user_id ) ) {
+			return $query;
+		}
+
+		$active_subaccount_id = $this->switching->get_active_subaccount_id();
+
+		if ( $active_subaccount_id > 0 ) {
+			$query['customer'] = array( $active_subaccount_id );
 			return $query;
 		}
 

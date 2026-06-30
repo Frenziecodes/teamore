@@ -1,6 +1,6 @@
 <?php
 /**
- * Simple user switching.
+ * Subaccount context switching.
  *
  * @package TeaMore
  */
@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) || exit;
  * TeaMore switching service.
  */
 class Teamore_Switching {
-	const SESSION_PARENT_ID = 'teamore_parent_user_id';
+	const SESSION_ACTIVE_SUBACCOUNT_ID = 'teamore_active_subaccount_id';
 
 	/**
 	 * Settings.
@@ -42,7 +42,7 @@ class Teamore_Switching {
 	}
 
 	/**
-	 * Switch into or back from a subaccount.
+	 * Set or clear the active subaccount context.
 	 *
 	 * @return void
 	 */
@@ -61,14 +61,17 @@ class Teamore_Switching {
 
 			$parent_id = get_current_user_id();
 
+			if ( $this->subaccounts->is_subaccount( $parent_id ) ) {
+				wc_add_notice( __( 'Subaccounts cannot switch to other accounts.', 'teamore' ), 'error' );
+				return;
+			}
+
 			if ( ! $this->subaccounts->parent_owns_subaccount( $parent_id, $subaccount_id ) ) {
 				wc_add_notice( __( 'You cannot switch to this subaccount.', 'teamore' ), 'error' );
 				return;
 			}
 
-			$this->set_parent_session( $parent_id );
-			wp_set_current_user( $subaccount_id );
-			wp_set_auth_cookie( $subaccount_id );
+			$this->set_active_subaccount_id( $subaccount_id );
 			wp_safe_redirect( wc_get_page_permalink( 'myaccount' ) );
 			exit;
 		}
@@ -79,16 +82,12 @@ class Teamore_Switching {
 				return;
 			}
 
-			$parent_id = $this->get_parent_session();
-
-			if ( $parent_id < 1 ) {
-				wc_add_notice( __( 'No parent session was found.', 'teamore' ), 'error' );
+			if ( ! $this->is_switched() ) {
+				wc_add_notice( __( 'No active subaccount session was found.', 'teamore' ), 'error' );
 				return;
 			}
 
-			$this->clear_parent_session();
-			wp_set_current_user( $parent_id );
-			wp_set_auth_cookie( $parent_id );
+			$this->clear_active_subaccount_id();
 			wp_safe_redirect( wc_get_account_endpoint_url( Teamore_My_Account::ENDPOINT ) );
 			exit;
 		}
@@ -122,7 +121,53 @@ class Teamore_Switching {
 	 * @return bool
 	 */
 	public function is_switched() {
-		return $this->get_parent_session() > 0;
+		return $this->get_active_subaccount_id() > 0;
+	}
+
+	/**
+	 * Get the user ID TeaMore should use for contextual actions.
+	 *
+	 * WordPress authentication remains attached to the parent user. This method
+	 * only affects TeaMore-specific behavior.
+	 *
+	 * @return int
+	 */
+	public function get_context_user_id() {
+		$subaccount_id = $this->get_active_subaccount_id();
+
+		return $subaccount_id > 0 ? $subaccount_id : get_current_user_id();
+	}
+
+	/**
+	 * Get active subaccount ID for the current authenticated parent.
+	 *
+	 * @return int
+	 */
+	public function get_active_subaccount_id() {
+		if ( ! $this->settings->is_enabled() || ! $this->settings->is_switching_enabled() || ! is_user_logged_in() ) {
+			$this->clear_active_subaccount_id();
+			return 0;
+		}
+
+		$parent_id = get_current_user_id();
+
+		if ( $this->subaccounts->is_subaccount( $parent_id ) ) {
+			$this->clear_active_subaccount_id();
+			return 0;
+		}
+
+		$subaccount_id = $this->get_active_subaccount_id_from_session();
+
+		if ( $subaccount_id < 1 ) {
+			return 0;
+		}
+
+		if ( ! $this->subaccounts->parent_owns_subaccount( $parent_id, $subaccount_id ) ) {
+			$this->clear_active_subaccount_id();
+			return 0;
+		}
+
+		return $subaccount_id;
 	}
 
 	/**
@@ -136,44 +181,44 @@ class Teamore_Switching {
 		}
 
 		echo '<p class="woocommerce-info teamore-switch-back">';
-		echo esc_html__( 'You are viewing this store as a subaccount.', 'teamore' ) . ' ';
-		echo '<a class="button" href="' . esc_url( $this->get_switch_back_url() ) . '">' . esc_html__( 'Switch Back to Parent', 'teamore' ) . '</a>';
+		echo esc_html__( 'You are acting as a subaccount. Your WordPress login remains your parent account.', 'teamore' ) . ' ';
+		echo '<a class="button" href="' . esc_url( $this->get_switch_back_url() ) . '">' . esc_html__( 'Return to Parent', 'teamore' ) . '</a>';
 		echo '</p>';
 	}
 
 	/**
-	 * Store parent session.
+	 * Store active subaccount context.
 	 *
-	 * @param int $parent_id Parent ID.
+	 * @param int $subaccount_id Subaccount ID.
 	 * @return void
 	 */
-	private function set_parent_session( $parent_id ) {
+	private function set_active_subaccount_id( $subaccount_id ) {
 		if ( function_exists( 'WC' ) && WC()->session ) {
-			WC()->session->set( self::SESSION_PARENT_ID, absint( $parent_id ) );
+			WC()->session->set( self::SESSION_ACTIVE_SUBACCOUNT_ID, absint( $subaccount_id ) );
 		}
 	}
 
 	/**
-	 * Get parent session.
+	 * Get active subaccount context from session.
 	 *
 	 * @return int
 	 */
-	private function get_parent_session() {
+	private function get_active_subaccount_id_from_session() {
 		if ( function_exists( 'WC' ) && WC()->session ) {
-			return absint( WC()->session->get( self::SESSION_PARENT_ID ) );
+			return absint( WC()->session->get( self::SESSION_ACTIVE_SUBACCOUNT_ID ) );
 		}
 
 		return 0;
 	}
 
 	/**
-	 * Clear parent session.
+	 * Clear active subaccount context.
 	 *
 	 * @return void
 	 */
-	private function clear_parent_session() {
+	private function clear_active_subaccount_id() {
 		if ( function_exists( 'WC' ) && WC()->session ) {
-			WC()->session->__unset( self::SESSION_PARENT_ID );
+			WC()->session->__unset( self::SESSION_ACTIVE_SUBACCOUNT_ID );
 		}
 	}
 }

@@ -90,7 +90,7 @@ class Teamore_My_Account {
 	 * @return array
 	 */
 	public function add_menu_item( $items ) {
-		if ( ! $this->settings->is_enabled() || $this->subaccounts->is_subaccount( get_current_user_id() ) ) {
+		if ( ! $this->settings->is_enabled() || $this->subaccounts->is_subaccount( get_current_user_id() ) || $this->switching->is_switched() ) {
 			return $items;
 		}
 
@@ -124,7 +124,7 @@ class Teamore_My_Account {
 		$action    = sanitize_key( wp_unslash( $_POST['teamore_action'] ) );
 		$parent_id = get_current_user_id();
 
-		if ( $this->subaccounts->is_subaccount( $parent_id ) ) {
+		if ( $this->subaccounts->is_subaccount( $parent_id ) || $this->switching->is_switched() ) {
 			wc_add_notice( __( 'Subaccounts cannot manage other accounts.', 'teamore' ), 'error' );
 			return;
 		}
@@ -188,7 +188,7 @@ class Teamore_My_Account {
 			return;
 		}
 
-		if ( $this->subaccounts->is_subaccount( get_current_user_id() ) ) {
+		if ( $this->subaccounts->is_subaccount( get_current_user_id() ) || $this->switching->is_switched() ) {
 			esc_html_e( 'Subaccounts cannot manage other accounts.', 'teamore' );
 			return;
 		}

@@ -91,8 +91,8 @@ final class Teamore_Plugin {
 
 		$this->settings    = new Teamore_Settings();
 		$this->subaccounts = new Teamore_Subaccounts( $this->settings );
-		$this->orders      = new Teamore_Orders( $this->settings, $this->subaccounts );
 		$this->switching   = new Teamore_Switching( $this->settings, $this->subaccounts );
+		$this->orders      = new Teamore_Orders( $this->settings, $this->subaccounts, $this->switching );
 		$this->my_account  = new Teamore_My_Account( $this->settings, $this->subaccounts, $this->orders, $this->switching );
 		$this->admin       = new Teamore_Admin( $this->settings, $this->subaccounts );
 	}
